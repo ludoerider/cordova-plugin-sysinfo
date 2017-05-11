@@ -6,7 +6,7 @@
     version="0.0.1">
 
 	<name>Sysinfo</name>
-	<author>Fabien Ryckoort</author>
+	<author>Mertens Ludo</author>
 
 	<description>
 		This plugin allows you to get various system information like memory, cpu...
@@ -24,7 +24,7 @@
 
 	<platform name="android">
 		<config-file target="res/xml/config.xml" parent="/*">
-			<feature name="Sysinfo" >
+			<feature name="Sysinfo">
 				<param name="android-package" value="com.ludoerider.plugins.sysinfo.Sysinfo"/>
 			</feature>
 		</config-file>
