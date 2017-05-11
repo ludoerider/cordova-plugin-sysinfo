@@ -21,17 +21,19 @@ import android.util.*;
 public class Sysinfo extends CordovaPlugin {
 	private static final String TAG = "Sysinfo";
 	private static final boolean ALWAYS_GET_CPU = false;
+	private static final boolean ALWAYS_GET_MEM = false;
 	private MemoryInfo memoryInfo;
 	private JSONObject cpuInfo;
-	
+	private JSONObject memoryData;
+
 	@Override
 	public boolean execute(String action, JSONArray args, CallbackContext callback) {
 
 		Activity activity = this.cordova.getActivity();
 		ActivityManager m = (ActivityManager) activity.getSystemService(Activity.ACTIVITY_SERVICE);
-
 		// store the memory info into a field.
-		//if (null == this.memoryInfo){
+
+		//if (null == this.memoryInfo || ALWAYS_GET_MEM){
 			this.memoryInfo = new MemoryInfo();
 		//}
 		m.getMemoryInfo(this.memoryInfo);
@@ -40,12 +42,13 @@ public class Sysinfo extends CordovaPlugin {
 		if (null == this.cpuInfo || ALWAYS_GET_CPU) {
 			cpuInfo = this.getCpuInfo();
 		}
-		
+
 		if (action.equals("getInfo")) {
 			try {
 				JSONObject r = new JSONObject();
 	            r.put("cpu", this.cpuInfo);
 	            r.put("memory", this.getMemoryInfo());
+				//r.put("memoryTst", this.memoryData);
 	            Log.v(TAG, r.toString());
 	            callback.success(r);
 			} catch (final Exception e) {
@@ -53,10 +56,10 @@ public class Sysinfo extends CordovaPlugin {
 				callback.error(e.getMessage());
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	public JSONObject getCpuInfo() {
 		JSONObject cpu = new JSONObject();
 		try {
@@ -81,7 +84,7 @@ public class Sysinfo extends CordovaPlugin {
 		}
 		return cpu;
 	}
-	
+
 	public JSONObject getMemoryInfo() {
 		JSONObject memory = new JSONObject();
 		Runtime runtime = Runtime.getRuntime();
@@ -90,6 +93,7 @@ public class Sysinfo extends CordovaPlugin {
 			memory.put("total", this.getTotalMemory());
 			memory.put("threshold", this.memoryInfo.threshold);
 			memory.put("low", this.memoryInfo.lowMemory);
+			memory.put("used", runtime.totalMemory() - runtime.freeMemory());
 			memory.put("free", runtime.freeMemory());
 			memory.put("total", runtime.totalMemory());
 			memory.put("max", runtime.maxMemory());
@@ -98,7 +102,7 @@ public class Sysinfo extends CordovaPlugin {
 		}
 		return memory;
 	}
-	
+
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	public Object getTotalMemory() {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
