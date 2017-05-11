@@ -22,17 +22,20 @@ public class Sysinfo extends CordovaPlugin {
 	private static final String TAG = "Sysinfo";
 	private static final boolean ALWAYS_GET_CPU = false;
 	private static final boolean ALWAYS_GET_MEM = false;
+	private ActivityManager m;
 	private static int count = 0;
 	private MemoryInfo memoryInfo;
 	private JSONObject cpuInfo;
 	private JSONObject memoryData;
 
 	@Override
-	public boolean execute(String action, JSONArray args, CallbackContext callback) {
-
+	protected void pluginInitialize() {
+		// create activity manager to request memory state from system
 		Activity activity = this.cordova.getActivity();
-		ActivityManager m = (ActivityManager) activity.getSystemService(Activity.ACTIVITY_SERVICE);
-		// store the memory info into a field.
+		m = (ActivityManager) activity.getSystemService(Activity.ACTIVITY_SERVICE);
+	}
+
+	public boolean execute(String action, JSONArray args, CallbackContext callback) {
 
 		//if (null == this.memoryInfo || ALWAYS_GET_MEM){
 			this.memoryInfo = new MemoryInfo();
@@ -51,7 +54,6 @@ public class Sysinfo extends CordovaPlugin {
 	            r.put("cpu", this.cpuInfo);
 	            r.put("memory", this.getMemoryInfo());
 				r.put("autoinc", this.count);
-				//r.put("memoryTst", this.memoryData);
 	            Log.v(TAG, r.toString());
 	            callback.success(r);
 			} catch (final Exception e) {
