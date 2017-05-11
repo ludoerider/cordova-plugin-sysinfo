@@ -22,30 +22,26 @@ import android.util.*;
 public class Sysinfo extends CordovaPlugin {
 	private static final String TAG = "Sysinfo";
 	private static final boolean ALWAYS_GET_CPU = false;
-	private static final boolean ALWAYS_GET_MEM = false;
+	private static final boolean ALWAYS_GET_MEM = true;
 	private ActivityManager m;
-	private static int count = 0;
-	private static String checkdate = "";
 	private MemoryInfo memoryInfo;
 	private JSONObject cpuInfo;
-	private JSONObject memoryData;
 
 	@Override
 	protected void pluginInitialize() {
-		// create activity manager to request memory state from system
+		//create activity manager to request memory state from system
 		Activity activity = this.cordova.getActivity();
 		m = (ActivityManager) activity.getSystemService(Activity.ACTIVITY_SERVICE);
 	}
 
 	public boolean execute(String action, JSONArray args, CallbackContext callback) {
 
-		Date test = new Date();
-		String dayString = test.toString();
+		Date thedate = new Date();
+		String dateTimeString = thedate.toString();
 
-		//if (null == this.memoryInfo || ALWAYS_GET_MEM){
+		if (null == this.memoryInfo || ALWAYS_GET_MEM){
 			this.memoryInfo = new MemoryInfo();
-		//}
-		this.count=this.count + 1;
+		}
 		m.getMemoryInfo(this.memoryInfo);
 
 		// Store the CPU info into a field. Only do this the first time
@@ -58,7 +54,7 @@ public class Sysinfo extends CordovaPlugin {
 				JSONObject r = new JSONObject();
 	            r.put("cpu", this.cpuInfo);
 	            r.put("memory", this.getMemoryInfo());
-				r.put("autoinc", dayString /*this.count*/);
+				r.put("datetime", dateTimeString);
 	            Log.v(TAG, r.toString());
 	            callback.success(r);
 			} catch (final Exception e) {
