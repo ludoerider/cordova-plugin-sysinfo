@@ -29,7 +29,7 @@ function Sysinfo() {
   this.available = false;
   this.cpu = null;
   this.memory = null;
-  this.autoinc = null;
+  this.datetime = null;
 
   var self = this;
 
@@ -38,7 +38,7 @@ function Sysinfo() {
           self.available = true;
           self.cpu = info.cpu;
           self.memory = info.memory;
-		  self.autoinc = info.autoinc;
+		  self.datetime = info.datetime;
       },function(e) {
           self.available = false;
           //utils.alert("[ERROR] Error initializing Cordova: " + e);
