@@ -15,6 +15,7 @@ import java.lang.Process;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Scanner;
+import java.util.Date;
 
 import android.util.*;
 
@@ -24,6 +25,7 @@ public class Sysinfo extends CordovaPlugin {
 	private static final boolean ALWAYS_GET_MEM = false;
 	private ActivityManager m;
 	private static int count = 0;
+	private static String checkdate = "";
 	private MemoryInfo memoryInfo;
 	private JSONObject cpuInfo;
 	private JSONObject memoryData;
@@ -36,6 +38,9 @@ public class Sysinfo extends CordovaPlugin {
 	}
 
 	public boolean execute(String action, JSONArray args, CallbackContext callback) {
+
+		Date test = new Date();
+		String dayString = test.toString();
 
 		//if (null == this.memoryInfo || ALWAYS_GET_MEM){
 			this.memoryInfo = new MemoryInfo();
@@ -53,7 +58,7 @@ public class Sysinfo extends CordovaPlugin {
 				JSONObject r = new JSONObject();
 	            r.put("cpu", this.cpuInfo);
 	            r.put("memory", this.getMemoryInfo());
-				r.put("autoinc", this.count);
+				r.put("autoinc", dayString /*this.count*/);
 	            Log.v(TAG, r.toString());
 	            callback.success(r);
 			} catch (final Exception e) {
