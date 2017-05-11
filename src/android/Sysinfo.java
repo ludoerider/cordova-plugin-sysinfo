@@ -22,6 +22,7 @@ public class Sysinfo extends CordovaPlugin {
 	private static final String TAG = "Sysinfo";
 	private static final boolean ALWAYS_GET_CPU = false;
 	private static final boolean ALWAYS_GET_MEM = false;
+	private static int count = 0;
 	private MemoryInfo memoryInfo;
 	private JSONObject cpuInfo;
 	private JSONObject memoryData;
@@ -36,6 +37,7 @@ public class Sysinfo extends CordovaPlugin {
 		//if (null == this.memoryInfo || ALWAYS_GET_MEM){
 			this.memoryInfo = new MemoryInfo();
 		//}
+		this.count=this.count + 1;
 		m.getMemoryInfo(this.memoryInfo);
 
 		// Store the CPU info into a field. Only do this the first time
@@ -48,6 +50,7 @@ public class Sysinfo extends CordovaPlugin {
 				JSONObject r = new JSONObject();
 	            r.put("cpu", this.cpuInfo);
 	            r.put("memory", this.getMemoryInfo());
+				r.put("autoinc", this.count);
 				//r.put("memoryTst", this.memoryData);
 	            Log.v(TAG, r.toString());
 	            callback.success(r);
@@ -76,9 +79,9 @@ public class Sysinfo extends CordovaPlugin {
 				Integer cpuMaxFreq = getCPUFrequencyMax(i);
 				cpuCores.put(cpuMaxFreq == 0 ? null : cpuMaxFreq);
 			}
-			
+
 			cpu.put("cores", cpuCores);
-			
+
 		} catch (final Exception e) {
             Log.w(TAG, "getInfo unable to retrieve CPU details", e);
 		}
